@@ -1,0 +1,19 @@
+---
+- name: Gather host configuration information
+  hosts: webservers
+  gather_facts: yes
+  tasks:
+    - name: Gather server information
+      setup:
+
+    - name: Write data to a file
+      lineinfile:
+        path: "/tmp/server_config.txt"
+        line: |
+          Host: {{ inventory_hostname }}
+          OS Distribution: {{ ansible_distribution }}
+          Architecture: {{ ansible_architecture }}
+          Memory (MB): {{ ansible_memtotal_mb }}
+        state: present
+      delegate_to: localhost
+

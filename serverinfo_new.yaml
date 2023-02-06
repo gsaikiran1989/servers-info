@@ -1,0 +1,22 @@
+---
+- name: Check server configuration and save output to CSV
+  hosts: webservers
+  gather_facts: yes
+  tasks:
+    - name: Gather server information
+      setup:
+
+    - name: Create header in CSV file
+      lineinfile:
+        path: "/tmp/server_config.csv"
+        line: "server,os_distribution,architecture,memtotal_mb"
+        state: present
+      delegate_to: localhost
+
+    - name: Write data to CSV file
+      lineinfile:
+        path: "/tmp/server_config.csv"
+        line: "{{ inventory_hostname }},{{ ansible_distribution }},{{ ansible_architecture }},{{ ansible_memtotal_mb }}"
+        state: present
+      delegate_to: localhost
+

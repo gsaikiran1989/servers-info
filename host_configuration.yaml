@@ -1,0 +1,30 @@
+---
+- name: Check host configuration
+  hosts: webservers
+  gather_facts: yes
+  tasks:
+  - name: Check the OS type and version
+    become: yes
+    command: cat /etc/os-release
+    register: os_type
+
+  - name: Check the CPU information
+    command: lscpu
+    register: cpu_info
+
+  - name: Check the Memory information
+    command: free -m
+    register: memory_info
+
+  - name: Check the disk information
+    command: df -h
+    register: disk_info
+
+- name: Write the results to a CSV file
+   become: yes
+   copy:
+     content: |
+      Host, OS, CPU, Memory, Disk
+       {{ inventory_hostname }}, {{ os_type.stdout }}, {{ cpu_info.stdout }}, {{ memory_info.stdout }}, {{ disk_info.stdout }}
+    dest: /tmp/host_config.csv
+
